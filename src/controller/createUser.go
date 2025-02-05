@@ -2,19 +2,22 @@ package controller
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jpirolla/CRUD_golang/src/configuration/rest_err"
+	"github.com/jpirolla/CRUD_golang/src/configuration/validation"
 	"github.com/jpirolla/CRUD_golang/src/controller/model/request"
 )
 
 func CreateUser(c *gin.Context) {
+	log.Println("Init createUser controller")
 	var userRequest request.UserRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
-		restErr := rest_err.NewBadRequestError(
-			fmt.Sprintf("Incorrect filds, error=%s\n", err.Error()))
-		c.JSON(restErr.Code, restErr)
+		log.Printf("Error trying to marshal object, error=%s\n", err.Error())
+		errRest := validation.ValidateUserError(err)
+
+		c.JSON(errRest.Code, errRest)
 		return
 	}
 
