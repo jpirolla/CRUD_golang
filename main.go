@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/jpirolla/CRUD_golang/src/controller/logger"
+	"github.com/jpirolla/CRUD_golang/src/configuration/logger"
 	"github.com/jpirolla/CRUD_golang/src/controller/routes"
 )
 

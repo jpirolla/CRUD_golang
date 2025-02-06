@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jpirolla/CRUD_golang/src/configuration/logger"
 	"github.com/jpirolla/CRUD_golang/src/configuration/validation"
-	"github.com/jpirolla/CRUD_golang/src/controller/logger"
 	"github.com/jpirolla/CRUD_golang/src/controller/model/request"
 	"github.com/jpirolla/CRUD_golang/src/controller/model/response"
 	"go.uber.org/zap"
