@@ -7,9 +7,8 @@ import (
 	"github.com/jpirolla/CRUD_golang/src/configuration/logger"
 	"github.com/jpirolla/CRUD_golang/src/configuration/validation"
 	"github.com/jpirolla/CRUD_golang/src/controller/model/request"
-	"github.com/jpirolla/CRUD_golang/src/controller/model/response"
+	"github.com/jpirolla/CRUD_golang/src/model"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 func CreateUser(c *gin.Context) {
@@ -26,20 +25,24 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	response := response.UserResponse{
-		ID:    "test",
-		Email: userRequest.Email,
-		Name:  userRequest.Name,
-		Age:   userRequest.Age,
+	domain := model.NewUserDomain(
+		userRequest.Email,
+		userRequest.Password,
+		userRequest.Name,
+		userRequest.Age,
+	)
+
+	// controler nao vai ter acesso aos dados, mas sim às funções
+	// que vão acessar os dados
+	//r etorna um rest Error
+	if err := domain.CreateUser(); err != nil {
+		c.JSON(err.Code, err)
+		return
 	}
 
 	logger.Info("User created successfully",
-		zapcore.Field{
-			Key:    "journey",
-			String: "create user",
-		},
-	)
+		zap.String("journey", "createUser"))
 
-	c.JSON(http.StatusOK, response)
+	c.String(http.StatusOK, "")
 
 }

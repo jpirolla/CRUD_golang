@@ -3,33 +3,49 @@ package model
 import (
 	"crypto/md5"
 	"encoding/hex"
-
-	"github.com/jpirolla/CRUD_golang/src/configuration/rest_err"
 )
 
-// regras de negocio do dominio de usuario
-// retirar as tags pois o domanin nao pode ser exportavel pois tem
-// Esse arquivo define como um usuário é representado dentro da nossa aplicação
+type UserDomainInterface interface {
+	GetEmail() string
+	GetPassword() string
+	GetName() string
+	GetAge() int8
 
-type UserDomain struct {
-	Email    string
-	Password string
-	Name     string
-	Age      int8
+	EncryptPassword()
 }
 
-func (ud *UserDomain) EncryptPassword() {
-	// md5 com hash
+func NewUserDomain(
+	email, password, name string,
+	age int8,
+) UserDomainInterface {
+	return &userDomain{
+		email, password, name, age,
+	}
+}
 
+type userDomain struct {
+	email    string
+	password string
+	name     string
+	age      int8
+}
+
+func (ud *userDomain) GetEmail() string {
+	return ud.email
+}
+func (ud *userDomain) GetPassword() string {
+	return ud.password
+}
+func (ud *userDomain) GetName() string {
+	return ud.name
+}
+func (ud *userDomain) GetAge() int8 {
+	return ud.age
+}
+
+func (ud *userDomain) EncryptPassword() {
 	hash := md5.New()
 	defer hash.Reset()
-	hash.Write([]byte(ud.Password))
-	ud.Password = hex.EncodeToString(hash.Sum(nil)) //trocar o valor da senha pela senha encriptada
-}
-
-type UserDomainInterface interface {
-	CreateUser() *rest_err.RestErr
-	UpdateUser(string) *rest_err.RestErr              // string é o id do usuario e o dominio a ser alterado
-	FindUser(string) (*UserDomain, *rest_err.RestErr) // caso de erro não posso retornar um obj vazio
-	DeleteUser(string) *rest_err.RestErr
+	hash.Write(([]byte(ud.password)))
+	ud.password = hex.EncodeToString((hash.Sum(nil)))
 }
