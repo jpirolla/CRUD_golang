@@ -18,7 +18,7 @@ func (ud *userDomainService) CreateUser(
 	logger.Info("Init createUser controller", zap.String("journey", "createUser"))
 
 	userDomain.EncryptPassword()
-	fmt.Println(ud)
+	fmt.Println(userDomain.GetPassword())
 
 	return nil
 }
