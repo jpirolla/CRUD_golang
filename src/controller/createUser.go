@@ -8,11 +8,10 @@ import (
 	"github.com/jpirolla/CRUD_golang/src/configuration/validation"
 	"github.com/jpirolla/CRUD_golang/src/controller/model/request"
 	"github.com/jpirolla/CRUD_golang/src/model"
-	"github.com/jpirolla/CRUD_golang/src/model/service"
 	"go.uber.org/zap"
 )
 
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	logger.Info("Init createUser controller",
 		zap.String("journey", "create user"),
 	)
@@ -33,12 +32,10 @@ func CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	service := service.NewUserDomainService()
-
 	// controler nao vai ter acesso aos dados, mas sim às funções
 	// que vão acessar os dados
 	//r etorna um rest Error
-	if err := service.CreateUser(domain); err != nil {
+	if err := uc.service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
