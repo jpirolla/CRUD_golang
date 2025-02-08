@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/jpirolla/CRUD_golang/src/configuration/database/mongodb"
 	"github.com/jpirolla/CRUD_golang/src/configuration/logger"
 	"github.com/jpirolla/CRUD_golang/src/controller"
 	"github.com/jpirolla/CRUD_golang/src/controller/routes"
@@ -17,6 +18,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	mongodb.InitConnection()
 
 	// init dependencies
 	service := service.NewUserDomainService()
