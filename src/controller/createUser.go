@@ -8,6 +8,7 @@ import (
 	"github.com/jpirolla/CRUD_golang/src/configuration/validation"
 	"github.com/jpirolla/CRUD_golang/src/controller/model/request"
 	"github.com/jpirolla/CRUD_golang/src/model"
+	"github.com/jpirolla/CRUD_golang/src/view"
 	"go.uber.org/zap"
 )
 
@@ -43,6 +44,6 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	logger.Info("User created successfully",
 		zap.String("journey", "createUser"))
 
-	c.String(http.StatusOK, "")
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
 
 }
