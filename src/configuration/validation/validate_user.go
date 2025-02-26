@@ -8,8 +8,9 @@ import (
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	en_translation "github.com/go-playground/validator/v10/translations/en"
 	"github.com/jpirolla/CRUD_golang/src/configuration/rest_err"
+
+	en_translation "github.com/go-playground/validator/v10/translations/en"
 )
 
 var (
@@ -26,15 +27,15 @@ func init() {
 	}
 }
 
-func ValidateUserError(validation_err error) *rest_err.RestErr {
-	// UnmarshalError tenta dar unmarshal de json pra obj e da erro na tipagem de algum campo
+func ValidateUserError(
+	validation_err error,
+) *rest_err.RestErr {
+
 	var jsonErr *json.UnmarshalTypeError
 	var jsonValidationError validator.ValidationErrors
 
 	if errors.As(validation_err, &jsonErr) {
-		// indica que os há campos com erros de tipagem
-		return rest_err.NewBadRequestError("invalid field type")
-
+		return rest_err.NewBadRequestError("Invalid field type")
 	} else if errors.As(validation_err, &jsonValidationError) {
 		errorsCauses := []rest_err.Causes{}
 
@@ -43,8 +44,8 @@ func ValidateUserError(validation_err error) *rest_err.RestErr {
 				Message: e.Translate(transl),
 				Field:   e.Field(),
 			}
-			errorsCauses = append(errorsCauses, cause)
 
+			errorsCauses = append(errorsCauses, cause)
 		}
 
 		return rest_err.NewBadRequestValidationError("Some fields are invalid", errorsCauses)
