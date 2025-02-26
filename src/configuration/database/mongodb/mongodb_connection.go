@@ -19,9 +19,9 @@ func NewMongoDBConnection(
 	mongodb_uri := os.Getenv(MONGODB_URL)
 	mongodb_database := os.Getenv(MONGODB_USER_DB)
 
-	// quando jogar p cloud é bom colocar password no apply ou na propria url
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongodb_uri))
-
+	client, err := mongo.Connect(
+		ctx,
+		options.Client().ApplyURI(mongodb_uri))
 	if err != nil {
 		return nil, err
 	}
