@@ -9,21 +9,21 @@ import (
 )
 
 var (
-	log        *zap.Logger
+	log *zap.Logger
+
 	LOG_OUTPUT = "LOG_OUTPUT"
 	LOG_LEVEL  = "LOG_LEVEL"
 )
 
 func init() {
 	logConfig := zap.Config{
-		// configuração stdout e o level como uma variavel de ambiente
 		OutputPaths: []string{getOutputLogs()},
 		Level:       zap.NewAtomicLevelAt(getLevelLogs()),
 		Encoding:    "json",
 		EncoderConfig: zapcore.EncoderConfig{
 			LevelKey:     "level",
 			TimeKey:      "time",
-			MessageKey:   "menssage",
+			MessageKey:   "message",
 			EncodeTime:   zapcore.ISO8601TimeEncoder,
 			EncodeLevel:  zapcore.LowercaseLevelEncoder,
 			EncodeCaller: zapcore.ShortCallerEncoder,
@@ -34,7 +34,7 @@ func init() {
 }
 
 func Info(message string, tags ...zap.Field) {
-	log.Info(message, tags...) // 3 pontos depois indica que passei todo o array da variavel
+	log.Info(message, tags...)
 	log.Sync()
 }
 
@@ -49,8 +49,8 @@ func getOutputLogs() string {
 	if output == "" {
 		return "stdout"
 	}
-	return output
 
+	return output
 }
 
 func getLevelLogs() zapcore.Level {
@@ -63,7 +63,5 @@ func getLevelLogs() zapcore.Level {
 		return zapcore.DebugLevel
 	default:
 		return zapcore.InfoLevel
-
 	}
-
 }
