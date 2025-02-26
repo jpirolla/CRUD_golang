@@ -12,14 +12,26 @@ import (
 	"go.uber.org/zap"
 )
 
+// CreateUser Creates a new user
+// @Summary Create a new user
+// @Description Create a new user with the provided user information
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param userRequest body request.UserRequest true "User information for registration"
+// @Success 200 {object} response.UserResponse
+// @Failure 400 {object} rest_err.RestErr
+// @Failure 500 {object} rest_err.RestErr
+// @Router /createUser [post]
 func (uc *userControllerInterface) CreateUser(c *gin.Context) {
-	logger.Info("Init createUser controller",
-		zap.String("journey", "create user"),
+	logger.Info("Init CreateUser controller",
+		zap.String("journey", "createUser"),
 	)
 	var userRequest request.UserRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
-		logger.Error("Error trying to validate user info", err, zap.String("journey", "create user"))
+		logger.Error("Error trying to validate user info", err,
+			zap.String("journey", "createUser"))
 		errRest := validation.ValidateUserError(err)
 
 		c.JSON(errRest.Code, errRest)
@@ -32,18 +44,22 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 		userRequest.Name,
 		userRequest.Age,
 	)
-
-	// controler nao vai ter acesso aos dados, mas sim às funções
-	// que vão acessar os dados
-	//r etorna um rest Error
-	if err := uc.service.CreateUser(domain); err != nil {
+	domainResult, err := uc.service.CreateUserServices(domain)
+	if err != nil {
+		logger.Error(
+			"Error trying to call CreateUser service",
+			err,
+			zap.String("journey", "createUser"))
 		c.JSON(err.Code, err)
 		return
 	}
 
-	logger.Info("User created successfully",
+	logger.Info(
+		"CreateUser controller executed successfully",
+		zap.String("userId", domainResult.GetID()),
 		zap.String("journey", "createUser"))
 
-	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
-
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(
+		domainResult,
+	))
 }
