@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 	"github.com/jpirolla/CRUD_golang/src/configuration/logger"
 	"github.com/jpirolla/CRUD_golang/src/controller"
 	"github.com/jpirolla/CRUD_golang/src/controller/routes"
+	"github.com/jpirolla/CRUD_golang/src/model/repository"
 	"github.com/jpirolla/CRUD_golang/src/model/service"
 )
 
@@ -17,12 +19,19 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+		return
 	}
 
-	mongodb.InitConnection()
+	//mongodb.InitConnection()
+	database, err := mongodb.NewMongoDBConnection(context.Background())
+	if err != nil {
+		log.Fatal("Error trying to connect to MongoDB, error = %s", err.Error())
+		return
+	}
 
 	// init dependencies
-	service := service.NewUserDomainService()
+	repo := repository.NewUserRepository(database)
+	service := service.NewUserDomainService(repo)
 	userController := controller.NewUserControllerInterface(service)
 
 	// preciso instanciar um router
