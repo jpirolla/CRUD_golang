@@ -7,30 +7,24 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ud *userDomainService) FindUserByIDServices(
-	id string,
-) (model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init findUserByID services.",
-		zap.String("journey", "findUserById"))
+func (ud *userDomainService) UpdateUser(
+	userId string,
+	userDomain model.UserDomainInterface,
+) *rest_err.RestErr {
+	logger.Info("Init updateUser model.",
+		zap.String("journey", "updateUser"))
 
-	return ud.userRepository.FindUserByID(id)
-}
+	err := ud.userRepository.UpdateUser(userId, userDomain)
+	if err != nil {
+		logger.Error("Error trying to call repository",
+			err,
+			zap.String("journey", "updateUser"))
+		return err
+	}
 
-func (ud *userDomainService) FindUserByEmailServices(
-	email string,
-) (model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init findUserByEmail services.",
-		zap.String("journey", "findUserById"))
-
-	return ud.userRepository.FindUserByEmail(email)
-}
-
-func (ud *userDomainService) findUserByEmailAndPasswordServices(
-	email string,
-	password string,
-) (model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init findUserByEmail services.",
-		zap.String("journey", "findUserById"))
-
-	return ud.userRepository.FindUserByEmailAndPassword(email, password)
+	logger.Info(
+		"updateUser service executed successfully",
+		zap.String("userId", userId),
+		zap.String("journey", "updateUser"))
+	return nil
 }
